@@ -2,4 +2,18 @@
 {{- $height := (.Get "height") }}
 {{- $alt := (.Get "alt") }}
 
-<img class="in-text" height="{{ $height | default `15` }}" src="{{$Img}}" alt="{{$alt}}">
+{{- $processableFormats := (slice "jpg" "jpeg" "png" "tif" "bmp" "gif") -}}
+{{- if hugo.IsExtended -}}
+    {{- $processableFormats = $processableFormats | append "webp" -}}
+{{- end -}}
+
+{{- if $Img -}}
+{{- $img := "" }}
+{{- if not (urls.Parse $Img).IsAbs }}
+{{- $img = resources.Get $Img }}
+<img class="in-text" height="{{ $height | default `16` }}" src="{{$img.Permalink}}" alt="{{$alt}}">
+{{- else }}
+<img draggable="false" src="{{ $Img | absURL }}" alt="{{$alt}}" title="{{$alt}}"
+    height="{{ $height | default 15 }}" width="{{ $height | default 15 }}" />
+{{- end }}
+{{- end}}
